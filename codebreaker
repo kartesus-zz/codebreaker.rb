@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require './lib/game'
+
+game = Game.new
+
+begin
+  loop do
+    if game.state === :game_started
+      puts "What's your guess?"
+      print "> "
+      game = game << gets.split('').map(&:to_i)
+    elsif game.state === :player_won
+      puts "You won! :)"
+      break
+    elsif game.state === :player_lost
+      puts "You lost. :("
+      break
+    elsif game.state === :wrong_guess
+      puts game.last_try.feedback.select{|a| [:+, :-].include? a}.map(&:to_s).sort.join('')
+      print "> "
+      game = game << gets.split('').map(&:to_i)
+    else
+      puts game.state.status
+      break
+    end
+  end
+rescue Exception => e
+  puts e
+  exit 1
+end
